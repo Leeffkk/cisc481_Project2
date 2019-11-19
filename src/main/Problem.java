@@ -2,9 +2,11 @@ package main;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class Problem {
 
+    public static HashMap<String, Integer> var_counter = new HashMap<>();
 
     public static HashMap<String, String> unify(ArrayList<String> pred1,
                                                 ArrayList<String> pred2,
@@ -30,5 +32,33 @@ public class Problem {
             var = bindings.get(var);
         }
         return var;
+    }
+
+    public static ArrayList<ArrayList<String>> uniquify(ArrayList<ArrayList<String>> clause) {
+        HashSet<String> has_changed = new HashSet<>();
+        ArrayList<ArrayList<String>> result = new ArrayList<>();
+        for (ArrayList<String> predicate : clause) {
+            ArrayList<String> tmp_predicate = new ArrayList<>();
+            for (String word : predicate) {
+                if (word.startsWith("?")) {
+                    if (has_changed.contains(word)) {
+                        word += var_counter.get(word);
+                    }
+                    else if (!var_counter.containsKey(word)) {
+                        var_counter.put(word, 1);
+                        has_changed.add(word);
+                        word += 1;
+                    }
+                    else {
+                        var_counter.put(word, var_counter.get(word)+1);
+                        has_changed.add(word);
+                        word += var_counter.get(word);
+                    }
+                }
+                tmp_predicate.add(word);
+            }
+            result.add(tmp_predicate);
+        }
+        return result;
     }
 }

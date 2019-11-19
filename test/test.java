@@ -1,12 +1,15 @@
+import main.Problem;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static main.Problem.get_binding;
-import static main.Problem.unify;
+import static main.Problem.*;
 
 public class test {
+
+    ArrayList<ArrayList<ArrayList<String>>> PREMISES;
+
 
     @Test
     public void test_unify1(){
@@ -34,4 +37,36 @@ public class test {
         test_bindings.put("?z", "?w");
         System.out.println(get_binding("?x", test_bindings));
     }
+
+    @Test
+    public void test_uniquify(){
+        ArrayList<ArrayList<String>> clause = new ArrayList<>();
+        ArrayList<String> pred1 = new ArrayList<>(){{add("p");add("?x");add("?y");}};
+        ArrayList<String> pred2 = new ArrayList<>(){{add("a");add("?x");add("?z");}};
+        ArrayList<String> pred3 = new ArrayList<>(){{add("a");add("?z");add("?y");}};
+        clause.add(pred1);
+        clause.add(pred2);
+        clause.add(pred3);
+        var_counter.put("?x", 3);
+        var_counter.put("?y", 6);
+        var_counter.put("?z", 2);
+        System.out.println(uniquify(clause));
+    }
+
+    @Test
+    public void test_case1(){
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 }
