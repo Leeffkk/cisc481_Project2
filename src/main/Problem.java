@@ -61,4 +61,10 @@ public class Problem {
         }
         return result;
     }
+
+    public static void printPremises(ArrayList<ArrayList<ArrayList<String>>> premises){
+        for (ArrayList<ArrayList<String>> clause : premises) {
+            System.out.println(clause);
+        }
+    }
 }

@@ -8,8 +8,9 @@ import static main.Problem.*;
 
 public class test {
 
-    ArrayList<ArrayList<ArrayList<String>>> PREMISES;
-
+    ArrayList<ArrayList<ArrayList<String>>> PREMISES = new ArrayList<>();
+    ArrayList<ArrayList<String>> GOALS = new ArrayList<>();
+    HashMap<String, String> BINDINGS = new HashMap<>();
 
     @Test
     public void test_unify1(){
@@ -55,10 +56,77 @@ public class test {
 
     @Test
     public void test_case1(){
+        ArrayList<ArrayList<String>> clause1 = new ArrayList<>();
+        clause1.add(new ArrayList<>(){{add("aunt");add("?x");add("?y");}});
+        clause1.add(new ArrayList<>(){{add("sister");add("?x");add("?z");}});
+        clause1.add(new ArrayList<>(){{add("mother");add("?z");add("?y");}});
 
+        ArrayList<ArrayList<String>> clause2 = new ArrayList<>();
+        clause2.add(new ArrayList<>(){{add("aunt");add("?x");add("?y");}});
+        clause2.add(new ArrayList<>(){{add("sister");add("?x");add("?z");}});
+        clause2.add(new ArrayList<>(){{add("father");add("?z");add("?y");}});
+
+        ArrayList<ArrayList<String>> clause3 = new ArrayList<>();
+        clause3.add(new ArrayList<>(){{add("sister");add("Mary");add("Sue");}});
+
+        ArrayList<ArrayList<String>> clause4 = new ArrayList<>();
+        clause4.add(new ArrayList<>(){{add("sister");add("Mary");add("Doug");}});
+
+        ArrayList<ArrayList<String>> clause5 = new ArrayList<>();
+        clause5.add(new ArrayList<>(){{add("father");add("Doug");add("John");}});
+
+        ArrayList<ArrayList<String>> clause6 = new ArrayList<>();
+        clause6.add(new ArrayList<>(){{add("mother");add("Sue");add("Paul");}});
+
+        PREMISES.add(clause1);
+        PREMISES.add(clause2);
+        PREMISES.add(clause3);
+        PREMISES.add(clause4);
+        PREMISES.add(clause5);
+        PREMISES.add(clause6);
+        GOALS.add(new ArrayList<>(){{add("aunt");add("?x");add("?y");}});
+
+        printPremises(PREMISES);
+        System.out.println("----------------------");
+        System.out.println(GOALS);
     }
 
+    @Test
+    public void test_case2(){
+        ArrayList<ArrayList<String>> clause1 = new ArrayList<>();
+        clause1.add(new ArrayList<>(){{add("aunt");add("?x");add("?y");}});
+        clause1.add(new ArrayList<>(){{add("sister");add("?x");add("?z");}});
+        clause1.add(new ArrayList<>(){{add("mother");add("?z");add("?y");}});
 
+        ArrayList<ArrayList<String>> clause2 = new ArrayList<>();
+        clause2.add(new ArrayList<>(){{add("aunt");add("?x");add("?y");}});
+        clause2.add(new ArrayList<>(){{add("sister");add("?x");add("?z");}});
+        clause2.add(new ArrayList<>(){{add("father");add("?z");add("?y");}});
+
+        ArrayList<ArrayList<String>> clause3 = new ArrayList<>();
+        clause3.add(new ArrayList<>(){{add("sister");add("Mary");add("Sue");}});
+
+        ArrayList<ArrayList<String>> clause4 = new ArrayList<>();
+        clause4.add(new ArrayList<>(){{add("sister");add("Mary");add("Doug");}});
+
+        ArrayList<ArrayList<String>> clause5 = new ArrayList<>();
+        clause5.add(new ArrayList<>(){{add("father");add("Doug");add("John");}});
+
+        ArrayList<ArrayList<String>> clause6 = new ArrayList<>();
+        clause6.add(new ArrayList<>(){{add("mother");add("Sue");add("Paul");}});
+
+        PREMISES.add(clause1);
+        PREMISES.add(clause2);
+        PREMISES.add(clause3);
+        PREMISES.add(clause4);
+        PREMISES.add(clause5);
+        PREMISES.add(clause6);
+        GOALS.add(new ArrayList<>(){{add("aunt");add("?x");add("?y");}});
+
+        printPremises(PREMISES);
+        System.out.println("----------------------");
+        System.out.println(GOALS);
+    }
 
 
 
