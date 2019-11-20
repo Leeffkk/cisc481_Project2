@@ -1,8 +1,6 @@
 package main;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 
 public class Problem {
 
@@ -11,20 +9,30 @@ public class Problem {
     public static HashMap<String, String> unify(ArrayList<String> pred1,
                                                 ArrayList<String> pred2,
                                                 HashMap<String, String> bindings){
-        if(bindings == null || !pred1.get(0).equals(pred2.get(0)) || pred1.size()!=pred2.size()){
+        HashMap<String, String> result = (HashMap<String, String>) bindings.clone();
+        if(result == null || !pred1.get(0).equals(pred2.get(0)) || pred1.size()!=pred2.size()){
             return null;
         }
         if(pred1.equals(pred2)){
-            return bindings;
+            return result;
         }
         for(int i=1; i<pred1.size(); i++) {
-            String bind1 = get_binding(pred1.get(i), bindings);
-            String bind2 = get_binding(pred2.get(i), bindings);
-            if(!bind1.equals(bind2) && bindings.get(bind1) != bind2) {
-                bindings.put(bind1, bind2);
+            String bind1 = get_binding(pred1.get(i), result);
+            String bind2 = get_binding(pred2.get(i), result);
+            if (bind1.equals(bind2)) {
+                continue;
             }
+            if (bind1.startsWith("?")) {
+                result.put(bind1, bind2);
+                continue;
+            }
+            if (bind2.startsWith("?")) {
+                result.put(bind2, bind1);
+                continue;
+            }
+            return null;
         }
-        return bindings;
+        return result;
     }
 
     public static String get_binding(String var, HashMap<String, String> bindings){
@@ -47,7 +55,7 @@ public class Problem {
                     else if (!var_counter.containsKey(word)) {
                         var_counter.put(word, 1);
                         has_changed.add(word);
-                        word += 1;
+                        word += "1";
                     }
                     else {
                         var_counter.put(word, var_counter.get(word)+1);
@@ -66,5 +74,95 @@ public class Problem {
         for (ArrayList<ArrayList<String>> clause : premises) {
             System.out.println(clause);
         }
+    }
+
+    public static HashSet<HashMap<String, String>> DFS(ArrayList<ArrayList<ArrayList<String>>> premises,
+                           ArrayList<ArrayList<String>> goals){
+
+        HashMap<String, String> bindings = new HashMap<>();
+
+        HashSet<HashMap<String, String>> result = new HashSet<>();
+
+        Stack<Goal_n_Binding> open_list = new Stack<>();
+        open_list.push(new Goal_n_Binding(goals, bindings));
+
+        while (!open_list.isEmpty() && bindings!=null) {
+            Goal_n_Binding cur_Goal_n_Binding = open_list.pop();
+            ArrayList<ArrayList<String>> current_goal = cur_Goal_n_Binding.current_goal;
+            HashMap<String, String> current_binding = cur_Goal_n_Binding.current_binding;
+
+//            System.out.println("START_OF_LOOP\ncur_element: "+cur_element);
+            for(ArrayList<ArrayList<String>> cur_clause : premises) {
+//                System.out.println("tmp_clause: " + cur_clause);
+//                System.out.println("tmp_bindings: " + bindings);
+                HashMap<String, String> new_bindings = unify(current_goal.get(0),
+                        uniquify(cur_clause).get(0), current_binding);
+                if (new_bindings == null) {
+                    continue;
+                }
+                if (new_bindings != null) {
+                    ArrayList<ArrayList<String>> successor = new ArrayList<>();
+                    successor.addAll(current_goal);
+                    successor.remove(0);
+                    ArrayList<ArrayList<String>> tmp_cur_clause = (ArrayList<ArrayList<String>>) cur_clause.clone();
+                    tmp_cur_clause.remove(0);
+                    successor.addAll(tmp_cur_clause);
+                    if (successor.isEmpty()) {
+                        result.add(new_bindings);
+                    }
+                    if (!successor.isEmpty()) {
+                        open_list.push(new Goal_n_Binding(successor, new_bindings));
+                    }
+//                    System.out.println("successor added: " + successor);
+                }
+            }
+//            System.out.println("END_OF_LOOP");
+        }
+        return result;
+    }
+
+    public static HashSet<HashMap<String, String>> BFS(ArrayList<ArrayList<ArrayList<String>>> premises,
+                                                       ArrayList<ArrayList<String>> goals){
+
+        HashMap<String, String> bindings = new HashMap<>();
+
+        HashSet<HashMap<String, String>> result = new HashSet<>();
+
+        Queue<Goal_n_Binding> open_list = new LinkedList<>();
+        open_list.add(new Goal_n_Binding(goals, bindings));
+
+        while (!open_list.isEmpty() && bindings!=null) {
+            Goal_n_Binding cur_Goal_n_Binding = open_list.remove();
+            ArrayList<ArrayList<String>> current_goal = cur_Goal_n_Binding.current_goal;
+            HashMap<String, String> current_binding = cur_Goal_n_Binding.current_binding;
+
+//            System.out.println("START_OF_LOOP\ncur_element: "+cur_element);
+            for(ArrayList<ArrayList<String>> cur_clause : premises) {
+//                System.out.println("tmp_clause: " + cur_clause);
+//                System.out.println("tmp_bindings: " + bindings);
+                HashMap<String, String> new_bindings = unify(current_goal.get(0),
+                        uniquify(cur_clause).get(0), current_binding);
+                if (new_bindings == null) {
+                    continue;
+                }
+                if (new_bindings != null) {
+                    ArrayList<ArrayList<String>> successor = new ArrayList<>();
+                    successor.addAll(current_goal);
+                    successor.remove(0);
+                    ArrayList<ArrayList<String>> tmp_cur_clause = (ArrayList<ArrayList<String>>) cur_clause.clone();
+                    tmp_cur_clause.remove(0);
+                    successor.addAll(tmp_cur_clause);
+                    if (successor.isEmpty()) {
+                        result.add(new_bindings);
+                    }
+                    if (!successor.isEmpty()) {
+                        open_list.add(new Goal_n_Binding(successor, new_bindings));
+                    }
+//                    System.out.println("successor added: " + successor);
+                }
+            }
+//            System.out.println("END_OF_LOOP");
+        }
+        return result;
     }
 }
