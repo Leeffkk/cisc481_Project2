@@ -4,12 +4,15 @@ import java.util.*;
 
 public class Problem {
 
+    static final int MAX_RESOLUTIONS = 300;
+
     public static HashMap<String, Integer> var_counter = new HashMap<>();
 
     public static HashMap<String, String> unify(ArrayList<String> pred1,
                                                 ArrayList<String> pred2,
                                                 HashMap<String, String> bindings){
         HashMap<String, String> result = (HashMap<String, String>) bindings.clone();
+
         if(result == null || !pred1.get(0).equals(pred2.get(0)) || pred1.size()!=pred2.size()){
             return null;
         }
@@ -78,7 +81,7 @@ public class Problem {
 
     public static HashSet<HashMap<String, String>> DFS(ArrayList<ArrayList<ArrayList<String>>> premises,
                            ArrayList<ArrayList<String>> goals){
-
+        int counter = 0;
         HashMap<String, String> bindings = new HashMap<>();
 
         HashSet<HashMap<String, String>> result = new HashSet<>();
@@ -87,43 +90,46 @@ public class Problem {
         open_list.push(new Goal_n_Binding(goals, bindings));
 
         while (!open_list.isEmpty() && bindings!=null) {
+
             Goal_n_Binding cur_Goal_n_Binding = open_list.pop();
+
             ArrayList<ArrayList<String>> current_goal = cur_Goal_n_Binding.current_goal;
             HashMap<String, String> current_binding = cur_Goal_n_Binding.current_binding;
 
-//            System.out.println("START_OF_LOOP\ncur_element: "+cur_element);
             for(ArrayList<ArrayList<String>> cur_clause : premises) {
-//                System.out.println("tmp_clause: " + cur_clause);
-//                System.out.println("tmp_bindings: " + bindings);
+
+                cur_clause = uniquify(cur_clause);
+                counter++;
                 HashMap<String, String> new_bindings = unify(current_goal.get(0),
-                        uniquify(cur_clause).get(0), current_binding);
+                        cur_clause.get(0), current_binding);
+
                 if (new_bindings == null) {
                     continue;
                 }
                 if (new_bindings != null) {
                     ArrayList<ArrayList<String>> successor = new ArrayList<>();
-                    successor.addAll(current_goal);
+
+                    successor.addAll(cur_clause);
                     successor.remove(0);
-                    ArrayList<ArrayList<String>> tmp_cur_clause = (ArrayList<ArrayList<String>>) cur_clause.clone();
-                    tmp_cur_clause.remove(0);
-                    successor.addAll(tmp_cur_clause);
+                    ArrayList<ArrayList<String>> tmp_cur_goal = (ArrayList<ArrayList<String>>) current_goal.clone();
+                    tmp_cur_goal.remove(0);
+                    successor.addAll(tmp_cur_goal);
+
                     if (successor.isEmpty()) {
                         result.add(new_bindings);
                     }
-                    if (!successor.isEmpty()) {
+                    if (!successor.isEmpty() && counter<=MAX_RESOLUTIONS) {
                         open_list.push(new Goal_n_Binding(successor, new_bindings));
                     }
-//                    System.out.println("successor added: " + successor);
                 }
             }
-//            System.out.println("END_OF_LOOP");
         }
         return result;
     }
 
     public static HashSet<HashMap<String, String>> BFS(ArrayList<ArrayList<ArrayList<String>>> premises,
                                                        ArrayList<ArrayList<String>> goals){
-
+        int counter = 0;
         HashMap<String, String> bindings = new HashMap<>();
 
         HashSet<HashMap<String, String>> result = new HashSet<>();
@@ -131,37 +137,41 @@ public class Problem {
         Queue<Goal_n_Binding> open_list = new LinkedList<>();
         open_list.add(new Goal_n_Binding(goals, bindings));
 
+
         while (!open_list.isEmpty() && bindings!=null) {
+
             Goal_n_Binding cur_Goal_n_Binding = open_list.remove();
+
             ArrayList<ArrayList<String>> current_goal = cur_Goal_n_Binding.current_goal;
             HashMap<String, String> current_binding = cur_Goal_n_Binding.current_binding;
 
-//            System.out.println("START_OF_LOOP\ncur_element: "+cur_element);
             for(ArrayList<ArrayList<String>> cur_clause : premises) {
-//                System.out.println("tmp_clause: " + cur_clause);
-//                System.out.println("tmp_bindings: " + bindings);
+
+                cur_clause = uniquify(cur_clause);
+                counter++;
                 HashMap<String, String> new_bindings = unify(current_goal.get(0),
-                        uniquify(cur_clause).get(0), current_binding);
+                        cur_clause.get(0), current_binding);
+
                 if (new_bindings == null) {
                     continue;
                 }
                 if (new_bindings != null) {
                     ArrayList<ArrayList<String>> successor = new ArrayList<>();
-                    successor.addAll(current_goal);
+
+                    successor.addAll(cur_clause);
                     successor.remove(0);
-                    ArrayList<ArrayList<String>> tmp_cur_clause = (ArrayList<ArrayList<String>>) cur_clause.clone();
-                    tmp_cur_clause.remove(0);
-                    successor.addAll(tmp_cur_clause);
+                    ArrayList<ArrayList<String>> tmp_cur_goal = (ArrayList<ArrayList<String>>) current_goal.clone();
+                    tmp_cur_goal.remove(0);
+                    successor.addAll(tmp_cur_goal);
+
                     if (successor.isEmpty()) {
                         result.add(new_bindings);
                     }
-                    if (!successor.isEmpty()) {
+                    if (!successor.isEmpty() && counter<=MAX_RESOLUTIONS) {
                         open_list.add(new Goal_n_Binding(successor, new_bindings));
                     }
-//                    System.out.println("successor added: " + successor);
                 }
             }
-//            System.out.println("END_OF_LOOP");
         }
         return result;
     }

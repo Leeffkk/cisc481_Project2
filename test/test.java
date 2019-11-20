@@ -15,16 +15,24 @@ public class test {
 
     @After
     public void after(){
+
+        System.out.println("Premises: ");
+        printPremises(PREMISES);
+        System.out.println("----------------------");
+        System.out.println("Goals:\n" + GOALS);
+
 //        BINDINGS = DFS(PREMISES, GOALS);
         BINDINGS = BFS(PREMISES, GOALS);
-        System.out.println("Result: " + BINDINGS);
+
+        System.out.println("-------------------\nResult: ");
         for (HashMap<String, String> binding : BINDINGS) {
-            System.out.println(binding);
+            System.out.print("{");
             for (String variable : GOALS.get(0)) {
                 if (variable.startsWith("?")) {
-                    System.out.println(variable + ": " + get_binding(variable, binding));
+                    System.out.print(variable + "/" + get_binding(variable, binding) + ", ");
                 }
             }
+            System.out.println("}");
         }
 
     }
@@ -60,10 +68,6 @@ public class test {
         PREMISES.add(clause5);
         PREMISES.add(clause6);
         GOALS.add(new ArrayList<>(){{add("aunt");add("?x");add("?y");}});
-
-        printPremises(PREMISES);
-        System.out.println("----------------------");
-        System.out.println(GOALS);
     }
 
     @Test
@@ -111,10 +115,6 @@ public class test {
         PREMISES.add(clause8);
         PREMISES.add(clause9);
         GOALS.add(new ArrayList<>(){{add("simple_sentence");add("?x");add("?y");add("?z");add("?u");add("?v");}});
-
-        printPremises(PREMISES);
-        System.out.println("----------------------");
-        System.out.println(GOALS);
     }
 
     @Test
@@ -139,15 +139,10 @@ public class test {
         PREMISES.add(clause3);
         PREMISES.add(clause4);
         GOALS.add(new ArrayList<>(){{add("ancestor");add("?x");add("?y");}});
-
-        printPremises(PREMISES);
-        System.out.println("----------------------");
-        System.out.println(GOALS);
     }
 
     @Test
     public void test_case4(){
-
         ArrayList<ArrayList<String>> clause1 = new ArrayList<>();
         clause1.add(new ArrayList<>(){{add("ancestor");add("?x");add("?y");}});
         clause1.add(new ArrayList<>(){{add("ancestor");add("?x");add("?z");}});
@@ -168,10 +163,6 @@ public class test {
         PREMISES.add(clause3);
         PREMISES.add(clause4);
         GOALS.add(new ArrayList<>(){{add("ancestor");add("?x");add("?y");}});
-
-        printPremises(PREMISES);
-        System.out.println("----------------------");
-        System.out.println(GOALS);
     }
 
     @Test

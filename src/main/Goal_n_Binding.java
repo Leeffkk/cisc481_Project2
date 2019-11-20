@@ -11,4 +11,9 @@ public class Goal_n_Binding {
         current_goal = goal;
         current_binding = binding;
     }
+
+    @Override
+    public String toString(){
+        return "\tgoal: " + current_goal.toString() + "\n\tbinding: " + current_binding.toString();
+    }
 }
