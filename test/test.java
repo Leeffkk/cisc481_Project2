@@ -21,8 +21,10 @@ public class test {
         System.out.println("----------------------");
         System.out.println("Goals:\n" + GOALS);
 
+        // TODO:: Comment & uncomment this section to switch between BFS and DFS
 //        BINDINGS = DFS(PREMISES, GOALS);
         BINDINGS = BFS(PREMISES, GOALS);
+        // TODO:: Comment & uncomment this section to switch between BFS and DFS
 
         System.out.println("-------------------\nResult: ");
         for (HashMap<String, String> binding : BINDINGS) {
